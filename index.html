@@ -2,123 +2,173 @@
   <html lang="en">
   <head>
       <meta charset="UTF-8">
-      <title>UPSC HUB - FINAL</title>
+      <title>UPSC AI Study OS - Final</title>
       <style>
-          body { background-color: #0f172a; color: white; font-family: sans-serif; margin: 0; display: flex; height:
-  100vh; overflow: hidden; }
-          .sidebar { width: 250px; background-color: #1e293b; border-right: 1px solid #334155; padding: 20px;
-  display: flex; flex-direction: column; }
-          .main { flex: 1; padding: 40px; display: flex; flex-direction: column; align-items: center; overflow-y:
-  auto; }
-          .btn { background: #3b82f6; color: white; border: none; padding: 12px; margin: 5px 0; width: 100%; cursor:
-  pointer; border-radius: 8px; text-align: left; font-size: 16px; }
-          .btn:hover { background: #2563eb; }
-          .card { background: #1e293b; padding: 20px; border-radius: 15px; border: 1px solid #334155; width: 100%;
-  max-width: 500px; }
-          .goal-item { background: #0f172a; padding: 10px; border-radius: 8px; margin: 10px 0; display: flex;
-  justify-content: space-between; border: 1px solid #334155; }
-          .input-row { display: flex; gap: 10px; margin-bottom: 20px; }
-          .input-row input { background: #0f172a; border: 1px solid #334155; color: white; padding: 8px;
-  border-radius: 5px; flex: 1; }
+          :root { --bg: #0f172a; --sb: #1e293b; --card: #334155; --accent: #3b82f6; --text: #f1f5f9; }
+          body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0;
+  display: flex; height: 100vh; overflow: hidden; }
+          .sidebar { width: 260px; background-color: var(--sb); border-right: 1px solid #334155; display: flex;
+  flex-direction: column; }
+          .sidebar-header { padding: 25px; border-bottom: 1px solid #334155; font-size: 22px; font-weight: bold;
+  color: #60a5fa; }
+          .nav-container { flex: 1; padding: 20px 15px; }
+          .nav-btn { background: transparent; color: #cbd5e1; padding: 12px 15px; border: none; border-radius: 10px;
+  cursor: pointer; margin-bottom: 8px; display: block; width: 100%; text-align: left; font-size: 16px; transition:
+  0.2s; }
+          .nav-btn:hover { background: #334155; color: white; }
+          .nav-btn.active { background: var(--accent); color: white; font-weight: bold; }
+          .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+          .top-bar { height: 64px; background-color: var(--sb); border-bottom: 1px solid #334155; display: flex;
+  align-items: center; justify-content: space-between; padding: 0 30px; }
+          .timer-box { background: #0f172a; padding: 5px 15px; border-radius: 20px; border: 1px solid var(--accent);
+  display: flex; align-items: center; gap: 10px; }
+          .content-area { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column;
+  align-items: center; }
+          .card { background-color: var(--sb); padding: 30px; border-radius: 20px; border: 1px solid #334155; width:
+  100%; max-width: 600px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin-bottom: 20px; }
+          .goal-item { display: flex; align-items: center; justify-content: space-between; background-color: #0f172a;
+  padding: 12px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #334155; }
+          .completed { text-decoration: line-through; opacity: 0.4; }
+          .vault-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;
+  width: 100%; max-width: 900px; }
+          .folder { background-color: var(--sb); border: 1px solid #334155; border-radius: 15px; padding: 20px;
+  text-align: center; cursor: pointer; transition: 0.2s; }
+          .folder:hover { transform: translateY(-5px); background-color: #334155; }
+          .btn { background-color: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 8px;
+  cursor: pointer; font-weight: bold; }
+          .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+          .input-group input { background: #0f172a; border: 1px solid #334155; color: white; padding: 10px;
+  border-radius: 8px; outline: none; }
       </style>
   </head>
   <body>
       <div class="sidebar">
-          <h2 style="color:#60a5fa">🚀 UPSC Hub</h2>
-          <button class="btn" onclick="showTab('dashboard')">🏠 Dashboard</button>
-          <button class="btn" onclick="showTab('pdf')">📚 PDF Vault</button>
-          <button class="btn" onclick="showTab('atlas')">🗺️ Atlas</button>
-          <button class="btn" onclick="showTab('pyq')">📝 PYQs</button>
+          <div class="sidebar-header">🚀 UPSC AI OS</div>
+          <div class="nav-container">
+              <button id="btn-dash" class="nav-btn active">🏠 Dashboard</button>
+              <button id="btn-pdf" class="nav-btn">📚 PDF Vault</button>
+              <button id="btn-atlas" class="nav-btn">🗺️ Atlas Maps</button>
+              <button id="btn-pyq" class="nav-btn">📝 PYQ Center</button>
+          </div>
       </div>
-      <div class="main">
-          <div id="content"></div>
+      <div class="main-content">
+          <div class="top-bar">
+              <div id="tab-title" style="font-weight: bold; text-transform: uppercase;">Dashboard</div>
+              <div class="timer-box">
+                  <span id="timer-label" style="font-size: 12px; color: #60a5fa;">FOCUS</span>
+                  <span id="timer-display" style="font-family: monospace; font-weight: bold;">25:00</span>
+                  <button id="timer-btn" class="btn" style="padding: 4px 10px; font-size: 11px;">Start</button>
+              </div>
+          </div>
+          <div class="content-area" id="main-screen"></div>
       </div>
-
       <script>
           var state = {
-              tab: 'dashboard',
-              tasks: [{ id: 1, text: 'Start your journey!', done: false, time: 'Now' }],
-              pdfs: { 'History': [], 'Polity': [], 'Geography': [], 'Economy': [] }
+              activeTab: 'dashboard',
+              tasks: [{ id: 1, text: 'Modern History: 1857 Revolt', done: false, time: '3-5 PM' }],
+              pdfs: { 'History': [{ name: 'Spectrum Modern', link: '#' }], 'Polity': [{ name: 'Laxmikanth', link: '#'
+  }], 'Geography': [], 'Economy': [] },
+              timer: { seconds: 1500, isActive: false, mode: 'Focus' }
           };
-
-          function showTab(name) {
-              state.tab = name;
-              var screen = document.getElementById('content');
-
-              if(name === 'dashboard') {
-                  var html = '<h1 style="color:#60a5fa">Welcome, Aspirant</h1>';
-                  html += '<div class="card">';
-                  html += '<h3>🎯 Daily Goals</h3>';
-                  html += '<div class="input-row">';
-                  html += '<input id="tIn" placeholder="Task..."><input id="tmIn" placeholder="Time"><button
-  onclick="addTask()" style="background:#3b82f6; color:white; border:none; padding:8px; border-radius:5px;
-  cursor:pointer;">+</button>';
-                  html += '</div>';
-                  html += '<div id="list">';
-                  state.tasks.forEach(function(t) {
-                      html += '<div class="goal-item"><div><input type="checkbox" ' + (t.done?'checked':'') + '
-  onchange="toggleT(' + t.id + ')"> ' + t.text + '</div><span>' + t.time + '</span></div>';
-                  });
-                  html += '</div></div>';
-                  screen.innerHTML = html;
-              } else if(name === 'pdf') {
-                  var html = '<h1 style="color:#60a5fa">📚 PDF Vault</h1><div style="display:grid;
-  grid-template-columns:1fr 1fr; gap:10px; width:100%; max-width:500px;">';
-                  Object.keys(state.pdfs).forEach(function(cat) {
-                      html += '<div class="card" style="text-align:center; cursor:pointer;" onclick="openFolder(\'' +
-  cat + '\')">📁 ' + cat + '</div>';
-                  });
-                  html += '</div>';
-                  screen.innerHTML = html;
-              } else {
-                  screen.innerHTML = '<h1 style="color:#60a5fa">' + name.toUpperCase() + '</h1><div
-  class="card">Coming Soon...</div>';
-              }
+          function switchTab(tab) {
+              state.activeTab = tab;
+              document.getElementById('tab-title').innerText = tab;
+              document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+              var btns = document.querySelectorAll('.nav-btn');
+              btns.forEach(b => { if(b.innerText.toLowerCase().includes(tab.toLowerCase()))
+  b.classList.add('active'); });
+              render();
           }
-
+          function toggleTask(id) {
+              state.tasks.forEach(t => { if(t.id === id) t.done = !t.done; });
+              render();
+          }
           function addTask() {
-              var t = document.getElementById('tIn').value;
-              var tm = document.getElementById('tmIn').value;
-              if(t) {
-                  state.tasks.push({ id: Date.now(), text: t, done: false, time: tm || 'N/A' });
-                  showTab('dashboard');
-              }
+              var t = document.getElementById('taskInput').value;
+              var tm = document.getElementById('timeInput').value;
+              if(t) { state.tasks.push({ id: Date.now(), text: t, done: false, time: tm || 'N/A' }); render(); }
           }
-
-          function toggleT(id) {
-              state.tasks.forEach(function(t) { if(t.id === id) t.done = !t.done; });
-              showTab('dashboard');
-          }
-
           function openFolder(cat) {
-              var screen = document.getElementById('content');
-              var list = state.pdfs[cat];
-              var html = '<button onclick="showTab(\'pdf\')" style="background:#334155; color:white; border:none;
-  padding:10px; border-radius:5px; cursor:pointer; margin-bottom:20px;">⬅ Back</button>';
-              html += '<h2 style="color:#60a5fa">' + cat + '</h2>';
-              html += '<div class="input-row"><input id="pn" placeholder="Name"><input id="pl"
-  placeholder="Link"><button onclick="addPdf(\'' + cat + '\')" style="background:#3b82f6; color:white; border:none;
-  padding:8px 15px; border-radius:5px; cursor:pointer;">+</button></div>';
-              html += '<div class="card" style="text-align:left;">';
-              list.forEach(function(p) {
+              var screen = document.getElementById('main-screen');
+              var pdfs = state.pdfs[cat] || [];
+              var html = '<button class="btn" style="background:#334155; margin-bottom:20px;"
+  onclick="switchTab(\'pdf\')">⬅ Back</button>';
+              html += '<h2 style="text-align:center; color:#60a5fa;">📂 ' + cat + '</h2>';
+              html += '<div class="input-group"><input id="pName" placeholder="Name" style="flex:2"><input id="pLink"
+  placeholder="Link" style="flex:1"><button class="btn" onclick="addPdf(\'' + cat + '\')">+</button></div>';
+              html += '<div style="width:100%; max-width:600px;">';
+              pdfs.forEach(p => {
                   html += '<div class="goal-item"><span>📄 ' + p.name + '</span><a href="' + p.link + '"
-  target="_blank" style="color:#60a5fa; text-decoration:none;">Open</a></div>';
+  target="_blank" style="color:#60a5fa; text-decoration:none; font-weight:bold;">Open ↗</a></div>';
               });
               html += '</div>';
               screen.innerHTML = html;
           }
-
           function addPdf(cat) {
-              var n = document.getElementById('pn').value;
-              var l = document.getElementById('pl').value;
-              if(n) {
-                  state.pdfs[cat].push({ name: n, link: l || '#' });
-                  openFolder(cat);
+              var n = document.getElementById('pName').value;
+              var l = document.getElementById('pLink').value;
+              if(n) { state.pdfs[cat].push({ name: n, link: l || '#' }); openFolder(cat); }
+          }
+          var timerInt;
+          function toggleTimer() {
+              state.timer.isActive = !state.timer.isActive;
+              document.getElementById('timer-btn').innerText = state.timer.isActive ? 'Pause' : 'Start';
+              if(state.timer.isActive) {
+                  timerInt = setInterval(function() {
+                      state.timer.seconds--;
+                      if(state.timer.seconds <= 0) {
+                          state.timer.isActive = false;
+                          state.timer.mode = state.timer.mode === 'Focus' ? 'Break' : 'Focus';
+                          state.timer.seconds = state.timer.mode === 'Focus' ? 1500 : 300;
+                          alert('Time up! Switching to ' + state.timer.mode);
+                          document.getElementById('timer-btn').innerText = 'Start';
+                      }
+                      updateTimerDisplay();
+                  }, 1000);
+              } else { clearInterval(timerInt); }
+          }
+          function updateTimerDisplay() {
+              var m = Math.floor(state.timer.seconds / 60);
+              var s = state.timer.seconds % 60;
+              document.getElementById('timer-display').innerText = m + ':' + (s < 10 ? '0' : '') + s;
+              document.getElementById('timer-label').innerText = state.timer.mode.toUpperCase();
+          }
+          function render() {
+              var screen = document.getElementById('main-screen');
+              if(state.activeTab === 'dashboard') {
+                  var completed = state.tasks.filter(t => t.done).length;
+                  var html = '<div style="text-align:center; margin-bottom:30px;"><h1 style="color:#60a5fa;
+  font-size:42px; margin:0;">Welcome, Aspirant</h1><p style="opacity:0.6;">Your centralized hub for
+  success.</p></div>';
+                  html += '<div class="card"><h3 style="text-align:center; color:#60a5fa;">🎯 Today\'s Master
+  Plan</h3><p style="text-align:center; font-size:14px; opacity:0.6;">Progress: ' + completed + '/' +
+  state.tasks.length + '</p>';
+                  html += '<div class="input-group"><input id="taskInput" placeholder="Goal..." style="flex:2"><input
+  id="timeInput" placeholder="Time" style="flex:1"><button class="btn" onclick="addTask()">+</button></div><div
+  style="margin-top:20px;">';
+                  state.tasks.forEach(t => {
+                      html += '<div class="goal-item"><div style="display:flex; align-items:center;"><input
+  type="checkbox" ' + (t.done ? 'checked' : '') + ' onchange="toggleTask(' + t.id + ')"
+  style="margin-right:10px;"><span class="goal-text ' + (t.done ? 'completed' : '') + '">' + t.text +
+  '</span></div><span style="font-size:12px; opacity:0.5;">' + t.time + '</span></div>';
+                  });
+                  html += '</div></div>';
+                  screen.innerHTML = html;
+              } else if(state.activeTab === 'pdf') {
+                  var html = '<h2 style="text-align:center; color:#60a5fa; margin-bottom:30px;">📚 PDF Library
+  Vault</h2><div class="vault-grid">';
+                  Object.keys(state.pdfs).forEach(cat => {
+                      html += '<div class="folder" onclick="openFolder(\'' + cat + '\')"><span
+  class="folder-icon">📁</span><strong>' + cat + '</strong></div>';
+                  });
+                  html += '</div>';
+                  screen.innerHTML = html;
+              } else {
+                  screen.innerHTML = '<div class="card" style="text-align:center"><h2 style="color:#60a5fa">' +
+  state.activeTab.toUpperCase() + '</h2><p>Coming Soon...</p></div>';
               }
           }
-
-          // Initialize
-          showTab('dashboard');
+          window.onload = function() { render(); updateTimerDisplay(); };
       </script>
   </body>
   </html>
