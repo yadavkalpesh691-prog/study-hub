@@ -2,13 +2,14 @@
   <html lang="en">
   <head>
       <meta charset="UTF-8">
-      <title>UPSC HUB - FINAL STABLE</title>
+      <title>UPSC HUB - FINAL</title>
       <style>
           body { background-color: #0f172a; color: white; font-family: sans-serif; margin: 0; display: flex; height:
   100vh; overflow: hidden; }
           .sidebar { width: 250px; background-color: #1e293b; border-right: 1px solid #334155; padding: 20px;
   display: flex; flex-direction: column; }
-          .main { flex: 1; padding: 40px; display: flex; flex-direction: column; align-items: center; }
+          .main { flex: 1; padding: 40px; display: flex; flex-direction: column; align-items: center; overflow-y:
+  auto; }
           .btn { background: #3b82f6; color: white; border: none; padding: 12px; margin: 5px 0; width: 100%; cursor:
   pointer; border-radius: 8px; text-align: left; font-size: 16px; }
           .btn:hover { background: #2563eb; }
@@ -16,6 +17,9 @@
   max-width: 500px; }
           .goal-item { background: #0f172a; padding: 10px; border-radius: 8px; margin: 10px 0; display: flex;
   justify-content: space-between; border: 1px solid #334155; }
+          .input-row { display: flex; gap: 10px; margin-bottom: 20px; }
+          .input-row input { background: #0f172a; border: 1px solid #334155; color: white; padding: 8px;
+  border-radius: 5px; flex: 1; }
       </style>
   </head>
   <body>
@@ -27,49 +31,47 @@
           <button class="btn" onclick="showTab('pyq')">📝 PYQs</button>
       </div>
       <div class="main">
-          <div id="content">
-              <!-- Content loads here -->
-          </div>
+          <div id="content"></div>
       </div>
 
       <script>
-          // Simple data
-          var tasks = [{ id: 1, text: 'Welcome to your Hub!', done: false, time: 'Now' }];
-          var pdfs = { 'History': [], 'Polity': [], 'Geography': [], 'Economy': [] };
+          var state = {
+              tab: 'dashboard',
+              tasks: [{ id: 1, text: 'Start your journey!', done: false, time: 'Now' }],
+              pdfs: { 'History': [], 'Polity': [], 'Geography': [], 'Economy': [] }
+          };
 
-          function showTab(tabName) {
+          function showTab(name) {
+              state.tab = name;
               var screen = document.getElementById('content');
 
-              if(tabName === 'dashboard') {
+              if(name === 'dashboard') {
                   var html = '<h1 style="color:#60a5fa">Welcome, Aspirant</h1>';
                   html += '<div class="card">';
                   html += '<h3>🎯 Daily Goals</h3>';
-                  html += '<div style="display:flex; gap:10px; margin-bottom:20px;">';
-                  html += '<input id="tIn" placeholder="Task..." style="flex:2; padding:8px; border-radius:5px;
-  border:none;">';
-                  html += '<input id="tmIn" placeholder="Time" style="flex:1; padding:8px; border-radius:5px;
-  border:none;">';
-                  html += '<button onclick="addTask()" style="background:#3b82f6; color:white; border:none;
-  padding:8px 15px; border-radius:5px; cursor:pointer;">+</button>';
+                  html += '<div class="input-row">';
+                  html += '<input id="tIn" placeholder="Task..."><input id="tmIn" placeholder="Time"><button
+  onclick="addTask()" style="background:#3b82f6; color:white; border:none; padding:8px; border-radius:5px;
+  cursor:pointer;">+</button>';
                   html += '</div>';
-                  html += '<div id="taskList">';
-                  tasks.forEach(function(t) {
+                  html += '<div id="list">';
+                  state.tasks.forEach(function(t) {
                       html += '<div class="goal-item"><div><input type="checkbox" ' + (t.done?'checked':'') + '
   onchange="toggleT(' + t.id + ')"> ' + t.text + '</div><span>' + t.time + '</span></div>';
                   });
                   html += '</div></div>';
                   screen.innerHTML = html;
-              } else if(tabName === 'pdf') {
+              } else if(name === 'pdf') {
                   var html = '<h1 style="color:#60a5fa">📚 PDF Vault</h1><div style="display:grid;
-  grid-template-columns:1fr 1fr; gap:10px; max-width:500px;">';
-                  Object.keys(pdfs).forEach(function(cat) {
+  grid-template-columns:1fr 1fr; gap:10px; width:100%; max-width:500px;">';
+                  Object.keys(state.pdfs).forEach(function(cat) {
                       html += '<div class="card" style="text-align:center; cursor:pointer;" onclick="openFolder(\'' +
   cat + '\')">📁 ' + cat + '</div>';
                   });
                   html += '</div>';
                   screen.innerHTML = html;
               } else {
-                  screen.innerHTML = '<h1 style="color:#60a5fa">' + tabName.toUpperCase() + '</h1><div
+                  screen.innerHTML = '<h1 style="color:#60a5fa">' + name.toUpperCase() + '</h1><div
   class="card">Coming Soon...</div>';
               }
           }
@@ -78,30 +80,25 @@
               var t = document.getElementById('tIn').value;
               var tm = document.getElementById('tmIn').value;
               if(t) {
-                  tasks.push({ id: Date.now(), text: t, done: false, time: tm || 'N/A' });
+                  state.tasks.push({ id: Date.now(), text: t, done: false, time: tm || 'N/A' });
                   showTab('dashboard');
               }
           }
 
           function toggleT(id) {
-              tasks.forEach(function(t) { if(t.id === id) t.done = !t.done; });
+              state.tasks.forEach(function(t) { if(t.id === id) t.done = !t.done; });
               showTab('dashboard');
           }
 
           function openFolder(cat) {
               var screen = document.getElementById('content');
-              var list = pdfs[cat];
+              var list = state.pdfs[cat];
               var html = '<button onclick="showTab(\'pdf\')" style="background:#334155; color:white; border:none;
   padding:10px; border-radius:5px; cursor:pointer; margin-bottom:20px;">⬅ Back</button>';
               html += '<h2 style="color:#60a5fa">' + cat + '</h2>';
-              html += '<div style="display:flex; gap:10px; margin-bottom:20px;">';
-              html += '<input id="pn" placeholder="Name" style="padding:8px; border-radius:5px; border:none;
-  flex:2;">';
-              html += '<input id="pl" placeholder="Link" style="padding:8px; border-radius:5px; border:none;
-  flex:1;">';
-              html += '<button onclick="addPdf(\'' + cat + '\')" style="background:#3b82f6; color:white; border:none;
-  padding:8px 15px; border-radius:5px; cursor:pointer;">+</button>';
-              html += '</div>';
+              html += '<div class="input-row"><input id="pn" placeholder="Name"><input id="pl"
+  placeholder="Link"><button onclick="addPdf(\'' + cat + '\')" style="background:#3b82f6; color:white; border:none;
+  padding:8px 15px; border-radius:5px; cursor:pointer;">+</button></div>';
               html += '<div class="card" style="text-align:left;">';
               list.forEach(function(p) {
                   html += '<div class="goal-item"><span>📄 ' + p.name + '</span><a href="' + p.link + '"
@@ -115,12 +112,12 @@
               var n = document.getElementById('pn').value;
               var l = document.getElementById('pl').value;
               if(n) {
-                  pdfs[cat].push({ name: n, link: l || '#' });
+                  state.pdfs[cat].push({ name: n, link: l || '#' });
                   openFolder(cat);
               }
           }
 
-          // Load dashboard on start
+          // Initialize
           showTab('dashboard');
       </script>
   </body>
